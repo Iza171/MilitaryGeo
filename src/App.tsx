@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { useEffect } from "react";
+import "leaflet/dist/leaflet.css";
+import MilitaryOSMLayer from "./MilitaryLayer";
 
-function App() {
-  const [count, setCount] = useState(0)
+function SetView({ center, zoom }: { center: [number, number]; zoom: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom);
+ }, [map, center, zoom]);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+ return null;
 }
 
-export default App
+export default function App() {
+
+ const center: [number, number] = [52.069167, 19.480556];
+ const zoom = 7;
+ return (
+ <MapContainer
+ style={{ height: "100vh", width: "100vw" }}
+ >
+ {/* Dodajemy nasz komponent SetView, który ustawi widok mapy na
+center i zoom */}
+ <SetView center={center} zoom={zoom} />
+ {/* TileLayer to warstwa kafelków mapy.
+ url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  – to adres serwera OpenStreetMap, który dostarcza obrazki mapy.
+ {s} – subdomena,
+ {z} – poziom zoomu,
+ {x} i {y} – współrzędne kafelka.
+ */}
+ <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+/>
+ <MilitaryOSMLayer />
+ </MapContainer>
+ );
+}
